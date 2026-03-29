@@ -1,0 +1,5 @@
+mistral: 7Ur9Fkd3cXwr9KWx9NxXnIwrzyc9Cryl
+
+serpapi: d5b2ac96d48ee5ed612b57097b05183dcdc2e821cf0c8152b8baa0c45505f4c6
+
+openweathermap: 319986e003fa2e213d4b89127908047a

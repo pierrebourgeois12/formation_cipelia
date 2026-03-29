@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Évaluation Formation LLMs - Avisia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header-logo {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            max-height: 50px;
+            width: auto;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .progress-tracker {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .instructions {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .instructions h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .category-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .category-header h2 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .category-header p {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+            color: #2d3748;
+        }
+
+        .question-type {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .options {
+            margin-top: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            margin-top: 3px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .section-results {
+            display: none;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .section-results.show {
+            display: block;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-display {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .answer-review {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .answer-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #e9ecef;
+        }
+
+        .answer-item.correct {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+
+        .answer-item.incorrect {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+
+        .answer-item h4 {
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        .learning-path {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .learning-path h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .learning-path ul {
+            margin-left: 20px;
+        }
+
+        .learning-path li {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .final-summary {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .final-summary.show {
+            display: block;
+        }
+
+        .category-score-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .score-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .section-menu-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .section-menu-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .section-menu-item.completed {
+            border-left-color: #28a745;
+            background: #f0f9f4;
+        }
+
+        .section-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .section-status.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .section-status.pending {
+            background: #6c757d;
+            color: white;
+        }
+
+        .question-display {
+            background: #e8eaf6;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #2d3748;
+        }
+
+        .answer-display {
+            background: rgba(255,255,255,0.7);
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .answer-display.correct-choice {
+            background: #d4edda;
+            border: 2px solid #28a745;
+        }
+
+        .answer-display.incorrect-choice {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+
+            .header, .instructions, .content {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1em;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="avisia.png" alt="Avisia Logo" class="header-logo">
+            <h1>Évaluation Formation LLMs</h1>
+            <p>Testez vos connaissances sur les 5 TPs de la formation</p>
+        </div>
+
+        <div class="progress-tracker">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <strong>Progression :</strong>
+                <span id="progressText">Section 1 sur 5</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBar" style="width: 0%">0%</div>
+            </div>
+        </div>
+
+        <div class="instructions" id="instructions">
+            <h2>Bienvenue dans le QCM de validation</h2>
+            <ul>
+                <li><strong>5 Sections :</strong> Une pour chaque TP de la formation.</li>
+                <li><strong>25 Questions :</strong> 5 questions par TP pour valider les concepts clés.</li>
+                <li><strong>Feedback immédiat :</strong> Explications détaillées après chaque section.</li>
+                <li><strong>Score :</strong> Obtenez un score global et des recommandations.</li>
+            </ul>
+            <div class="button-container">
+                <button class="btn" onclick="showSectionMenu()">Commencer l'évaluation</button>
+            </div>
+        </div>
+
+        <div class="instructions" id="sectionMenu" style="display: none;">
+            <h2>Sélectionnez une section</h2>
+            <div id="sectionMenuList"></div>
+        </div>
+
+        <div class="content" id="content" style="display: none;">
+            <!-- Sections will be generated by JS -->
+            <div id="questionsContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const questionData = {
+            // TP 1 : Fine-tuning Mistral API
+            1: {
+                correct: 'B',
+                explanation: 'JSONL (JSON Lines) est le format obligatoire pour Mistral API. Chaque ligne est un objet JSON avec la structure {messages: [{role, content}]}.',
+                learningPoint: 'Le format JSONL permet un traitement ligne par ligne efficace pour les grands datasets.'
+            },
+            2: {
+                correct: 'C',
+                explanation: 'Pour un secteur critique comme la banque, une accuracy de 85-90% minimum est requise. 25 exemples donnent ~40%, 1000+ exemples sont nécessaires pour production.',
+                learningPoint: 'La qualité du fine-tuning dépend directement de la quantité et diversité des données d\'entraînement.'
+            },
+            3: {
+                correct: 'A',
+                explanation: 'La matrice de confusion montre les confusions entre catégories (faux positifs/négatifs), permettant d\'identifier les ambiguïtés à corriger.',
+                learningPoint: 'Une matrice de confusion bien analysée guide l\'amélioration du dataset (ajouter exemples aux zones confuses).'
+            },
+            4: {
+                correct: 'B',
+                explanation: 'Fine-tuning adapte le vocabulaire métier (IBAN, SEPA, virement) et le ton de l\'entreprise, réduisant les hallucinations sur des sujets spécialisés.',
+                learningPoint: 'Le fine-tuning est complémentaire au RAG : RAG pour données changeantes, fine-tuning pour style/ton.'
+            },
+            5: {
+                correct: 'C',
+                explanation: 'Mistral API limite à 100 epochs maximum. Pour 25 exemples, 10 training_steps suffisent (trop d\'epochs = overfitting).',
+                learningPoint: 'Règle approximative : 1 epoch ≈ nombre_exemples / batch_size.'
+            },
+
+            // TP 2 : Prompt Engineering
+            6: {
+                correct: 'B',
+                explanation: 'Few-shot = donner "quelques" exemples (2-10) dans le prompt. One-shot = 1 exemple. Zero-shot = aucun exemple.',
+                learningPoint: 'Few-shot + Chain-of-Thought est la combinaison la plus puissante pour tâches complexes.'
+            },
+            7: {
+                correct: 'A',
+                explanation: 'Chain-of-Thought demande au modèle de montrer son raisonnement étape par étape, améliorant drastiquement la précision sur logique/calculs.',
+                learningPoint: 'Formulation magique : "Résous étape par étape" ou "Let\'s think step by step".'
+            },
+            8: {
+                correct: 'C',
+                explanation: 'Les guardrails valident les entrées (bloquer injections, caractères interdits) et sorties (vérifier langue, ton, absence mentions concurrents).',
+                learningPoint: 'Les guardrails sont essentiels en production pour éviter manipulations et garantir conformité.'
+            },
+            9: {
+                correct: 'A',
+                explanation: 'Pour tâches déterministes (classification, extraction), température basse (0.1-0.3). Pour créativité (génération texte), température haute (0.7-1.0).',
+                learningPoint: 'Temperature = 0 donne toujours la même sortie (mode greedy). Temperature = 1 = maximum de diversité.'
+            },
+            10: {
+                correct: 'B',
+                explanation: 'Role prompting définit un rôle explicite ("Tu es un expert en...", "Tu es un enseignant pour enfants..."), changeant drastiquement le ton et la profondeur.',
+                learningPoint: 'Le rôle influence le vocabulaire, la complexité et le style de la réponse.'
+            },
+
+            // TP 3 : RAG avec LangChain
+            11: {
+                correct: 'B',
+                explanation: 'RAG = Retrieval (recherche documents pertinents) + Augmented (enrichir le contexte) + Generation (LLM génère avec ce contexte).',
+                learningPoint: 'RAG résout le problème de knowledge cutoff et réduit les hallucinations en ancrant le LLM sur vos documents.'
+            },
+            12: {
+                correct: 'C',
+                explanation: 'Le vector store (FAISS, ChromaDB, Pinecone) stocke les embeddings et permet la recherche par similarité cosinus.',
+                learningPoint: 'Les bases vectorielles sont le moteur de recherche sémantique du RAG (vs recherche par mots-clés traditionnelle).'
+            },
+            13: {
+                correct: 'A',
+                explanation: 'Chunks typiques : 500-1000 caractères. Trop grand = perte précision. Trop petit = perte contexte. Overlap 10-20% pour continuité.',
+                learningPoint: 'Le chunking est un art : tester plusieurs stratégies (RecursiveCharacterTextSplitter, SemanticChunker).'
+            },
+            14: {
+                correct: 'B',
+                explanation: 'all-MiniLM-L6-v2 : 90MB, 384 dimensions, rapide, bon pour prototypage. Pour production : paraphrase-multilingual ou APIs (Mistral/OpenAI Embed).',
+                learningPoint: 'Choix modèle embeddings impacte fortement la qualité de la recherche (tester plusieurs modèles).'
+            },
+            15: {
+                correct: 'C',
+                explanation: 'FAISS = ultra-rapide, local, pas de métadonnées. ChromaDB = open-source, REST, filtres. Pinecone/Weaviate = production, managé, scalable.',
+                learningPoint: 'Critères choix : volume données (millions ? → Pinecone), budget (gratuit ? → FAISS/Chroma), features (filtres ? → Chroma/Pinecone).'
+            },
+
+            // TP 4 : Agents IA avec OpenAI
+            16: {
+                correct: 'A',
+                explanation: 'ChatCompletionToolParam est la structure normalisée OpenAI pour exposer des outils/fonctions au LLM via function calling.',
+                learningPoint: 'Une description précise de l\'outil améliore considérablement la qualité des appels générés par le LLM.'
+            },
+            17: {
+                correct: 'B',
+                explanation: 'Valider type="SELECT" empêche les modifications/suppressions de données. Un LLM peut se tromper ou être manipulé (injection).',
+                learningPoint: 'Sécurité : n\'exposer aux agents que des outils en lecture seule (SELECT, GET) sauf si modification intentionnelle et validée.'
+            },
+            18: {
+                correct: 'C',
+                explanation: 'SQLAlchemy metadata.reflect() charge automatiquement le schéma de la base (tables, colonnes, types) sans écrire les définitions manuellement.',
+                learningPoint: 'Enrichir le schéma avec descriptions colonnes et exemples de valeurs améliore drastiquement la génération SQL.'
+            },
+            19: {
+                correct: 'A',
+                explanation: 'async/await permet de ne pas bloquer le programme lors d\'appels API longs (OpenAI, BigQuery), et d\'exécuter plusieurs tâches simultanément.',
+                learningPoint: 'AsyncOpenAI pour appels non-bloquants. Essentiel pour systèmes multi-agents ou interfaces utilisateur réactives.'
+            },
+            20: {
+                correct: 'B',
+                explanation: 'Trop de modalités (>10) rendent les graphiques illisibles. L\'agent doit filtrer/agréger (ex: top 10 catégories, regrouper "Autres").',
+                learningPoint: 'Un agent de préparation Pandas (top N, agrégation, calculs) améliore la qualité des visualisations.'
+            },
+
+            // TP 5 : MCP (Model Context Protocol)
+            21: {
+                correct: 'B',
+                explanation: 'MCP (Model Context Protocol) est un protocole standardisé par Anthropic pour connecter LLMs aux données/outils de manière uniforme.',
+                learningPoint: 'MCP évite les intégrations custom pour chaque combinaison (LLM × Outil), favorisant la réutilisabilité.'
+            },
+            22: {
+                correct: 'C',
+                explanation: 'Les 3 primitives MCP : TOOLS (fonctions actives), RESOURCES (contenus statiques), PROMPTS (templates pré-définis).',
+                learningPoint: 'TOOLS = actions dynamiques (requêtes API). RESOURCES = documentation, templates. PROMPTS = tâches communes pré-formulées.'
+            },
+            23: {
+                correct: 'A',
+                explanation: 'role="tool" dans l\'historique indique que ce message est le résultat d\'un appel d\'outil (lié par tool_call_id).',
+                learningPoint: 'Format correct : {role: "tool", content: "résultat", tool_call_id: "xyz"} pour que le LLM lie l\'appel à sa réponse.'
+            },
+            24: {
+                correct: 'B',
+                explanation: 'Boucle agentique : 1) LLM analyse, 2) Décide outil ou réponse directe, 3) Exécute outil MCP, 4) Ajoute résultat historique, 5) LLM génère réponse finale.',
+                learningPoint: 'Max iterations (5-10) évite boucles infinies. tool_choice="auto" = LLM décide autonomie.'
+            },
+            25: {
+                correct: 'C',
+                explanation: 'Avantages MCP : standardisation (un serveur = tous LLMs), réutilisabilité, sécurité (serveur gère auth), isolation données sensibles, évolutivité.',
+                learningPoint: 'MCP transforme chaque API/DB en "plugin" réutilisable pour n\'importe quel assistant IA compatible.'
+            }
+        };
+
+        const sectionData = {
+            1: {
+                name: 'Fine-tuning Mistral API',
+                max: 5,
+                questions: [
+                    {id: 1, text: "Quel format de données est obligatoire pour fine-tuner avec Mistral API ?", options: {A: "CSV avec colonnes question/réponse", B: "JSONL (JSON Lines) avec structure {messages: []}", C: "Excel avec feuilles train/validation", D: "TXT avec séparateur ---"}},
+                    {id: 2, text: "Quelle accuracy minimum est requise pour déployer un modèle bancaire en production ?", options: {A: "50% (mieux que hasard)", B: "70% (acceptable)", C: "85-90% (requis secteur critique)", D: "100% (perfection obligatoire)"}},
+                    {id: 3, text: "Quelle métrique permet d'identifier les confusions entre catégories (ex: 'virement' classé comme 'prêt') ?", options: {A: "Matrice de confusion", B: "Accuracy globale", C: "Temps de réponse", D: "Taille du modèle"}},
+                    {id: 4, text: "Pourquoi fine-tuner un modèle pour le secteur bancaire plutôt qu'utiliser un modèle générique ?", options: {A: "C'est obligatoire légalement", B: "Adapter vocabulaire métier (IBAN, SEPA) et ton entreprise", C: "Réduire le coût d'inférence", D: "Augmenter la vitesse de réponse"}},
+                    {id: 5, text: "Quelle est la limite d'epochs imposée par Mistral API ?", options: {A: "10 epochs maximum", B: "50 epochs maximum", C: "100 epochs maximum", D: "Illimité"}}
+                ]
+            },
+            2: {
+                name: 'Prompt Engineering',
+                max: 5,
+                questions: [
+                    {id: 6, text: "Quelle est la différence entre Zero-shot, One-shot et Few-shot prompting ?", options: {A: "Vitesse de réponse (rapide vs lent)", B: "Nombre d'exemples fournis (0, 1, plusieurs)", C: "Taille du modèle utilisé", D: "Langue de la réponse"}},
+                    {id: 7, text: "Que permet la technique 'Chain-of-Thought' (CoT) ?", options: {A: "Améliorer le raisonnement étape par étape", B: "Réduire le coût en tokens", C: "Traduire automatiquement", D: "Accélérer la génération"}},
+                    {id: 8, text: "Que sont les 'guardrails' dans le contexte du prompt engineering ?", options: {A: "Des barrières physiques pour serveurs", B: "Des règles de grammaire", C: "Des validations entrée/sortie pour sécurité et conformité", D: "Des outils de débogage"}},
+                    {id: 9, text: "Quelle température utiliser pour une tâche de classification déterministe ?", options: {A: "0.1-0.3 (faible, déterministe)", B: "0.5 (équilibrée)", C: "0.8-1.0 (haute, créative)", D: "2.0 (maximum de diversité)"}},
+                    {id: 10, text: "Quel est l'effet du 'role prompting' (ex: 'Tu es un expert en...')?", options: {A: "Aucun effet, c'est juste pour faire joli", B: "Change le ton, vocabulaire et profondeur de la réponse", C: "Accélère la génération", D: "Réduit la consommation de tokens"}}
+                ]
+            },
+            3: {
+                name: 'RAG avec LangChain',
+                max: 5,
+                questions: [
+                    {id: 11, text: "Que signifie l'acronyme RAG ?", options: {A: "Rapid AI Generation", B: "Retrieval Augmented Generation", C: "Random Access Gateway", D: "Reinforced Agent Graph"}},
+                    {id: 12, text: "Quel est le rôle du Vector Store (ex: FAISS, ChromaDB) dans un système RAG ?", options: {A: "Générer les réponses", B: "Traduire les textes", C: "Stocker les embeddings et rechercher par similarité", D: "Compresser les documents"}},
+                    {id: 13, text: "Quelle taille de chunks (morceaux) est typiquement recommandée pour le RAG ?", options: {A: "500-1000 caractères avec overlap 10-20%", B: "10-50 caractères (très petit)", C: "Document entier (pas de découpage)", D: "10,000+ caractères (très grand)"}},
+                    {id: 14, text: "Quel modèle d'embeddings est recommandé pour prototypage rapide (léger, gratuit) ?", options: {A: "GPT-4 (OpenAI)", B: "all-MiniLM-L6-v2 (Sentence-Transformers)", C: "Claude-3-Opus (Anthropic)", D: "Llama-70B (Meta)"}},
+                    {id: 15, text: "Quelle est la principale différence entre FAISS, ChromaDB et Pinecone ?", options: {A: "Aucune, ils sont identiques", B: "Langue supportée (FR vs EN)", C: "FAISS=local/rapide, ChromaDB=filtres, Pinecone=managé/scalable", D: "Prix uniquement"}}
+                ]
+            },
+            4: {
+                name: 'Agents IA avec OpenAI',
+                max: 5,
+                questions: [
+                    {id: 16, text: "Qu'est-ce que ChatCompletionToolParam dans OpenAI ?", options: {A: "Structure pour exposer outils/fonctions au LLM", B: "Un modèle de LLM spécialisé", C: "Une base de données", D: "Un format d'image"}},
+                    {id: 17, text: "Pourquoi est-il critique de valider que type='SELECT' pour les requêtes SQL générées par un agent ?", options: {A: "Pour accélérer l'exécution", B: "Pour empêcher modifications/suppressions non autorisées (sécurité)", C: "Pour économiser des tokens", D: "C'est optionnel, pas important"}},
+                    {id: 18, text: "Quel est le rôle de SQLAlchemy metadata.reflect() ?", options: {A: "Traduire SQL en français", B: "Compresser la base de données", C: "Charger automatiquement le schéma de la DB (tables, colonnes)", D: "Visualiser les graphiques"}},
+                    {id: 19, text: "Pourquoi utiliser async/await dans un système d'agents IA ?", options: {A: "Ne pas bloquer lors d'appels API longs, exécuter plusieurs tâches simultanément", B: "Réduire la taille du code", C: "Améliorer la sécurité", D: "C'est obligatoire avec OpenAI"}},
+                    {id: 20, text: "Quel problème pose l'affichage de graphiques avec trop de modalités (ex: 50 catégories) ?", options: {A: "Consomme trop de GPU", B: "Graphiques illisibles, nécessite filtrage/agrégation (top 10, 'Autres')", C: "Trop rapide à afficher", D: "Aucun problème"}}
+                ]
+            },
+            5: {
+                name: 'MCP (Model Context Protocol)',
+                max: 5,
+                questions: [
+                    {id: 21, text: "Que signifie MCP et qui l'a créé ?", options: {A: "Machine Code Protocol (Google)", B: "Model Context Protocol (Anthropic)", C: "Multi Cloud Platform (Microsoft)", D: "Managed Content Provider (OpenAI)"}},
+                    {id: 22, text: "Quelles sont les 3 primitives du protocole MCP ?", options: {A: "Inputs, Outputs, Errors", B: "Read, Write, Delete", C: "Tools, Resources, Prompts", D: "Train, Test, Validate"}},
+                    {id: 23, text: "À quoi sert role='tool' dans l'historique des messages ?", options: {A: "Indiquer que le message est le résultat d'un appel d'outil", B: "Marquer un message comme supprimé", C: "Changer la couleur du texte", D: "Activer le mode debug"}},
+                    {id: 24, text: "Comment fonctionne la boucle agentique (agentic loop) avec MCP ?", options: {A: "Une seule requête, une seule réponse (statique)", B: "LLM analyse → Décide outil/réponse → Exécute → Ajoute historique → Génère réponse (itératif)", C: "Le serveur MCP génère directement les réponses", D: "L'humain doit manuellement appeler chaque outil"}},
+                    {id: 25, text: "Quel est le principal avantage de MCP par rapport aux intégrations custom ?", options: {A: "C'est gratuit (intégrations custom sont payantes)", B: "Plus rapide de 10x", C: "Standardisation et réutilisabilité (un serveur = tous LLMs)", D: "Supporte uniquement Claude"}}
+                ]
+            }
+        };
+
+        let completedSections = [];
+        let sectionScores = {};
+
+        // --- LOGIC ---
+
+        function showSectionMenu() {
+            document.getElementById('instructions').style.display = 'none';
+            document.getElementById('content').style.display = 'none';
+            document.getElementById('sectionMenu').style.display = 'block';
+            renderSectionMenu();
+        }
+
+        function renderSectionMenu() {
+            let html = '';
+            for (let sectionNum in sectionData) {
+                const section = sectionData[sectionNum];
+                const isCompleted = completedSections.includes(parseInt(sectionNum));
+                const score = sectionScores[sectionNum] || 0;
+
+                html += `
+                    <div class="section-menu-item ${isCompleted ? 'completed' : ''}" onclick="navigateToSection(${sectionNum})">
+                        <div>
+                            <h3 style="margin-bottom: 5px;">TP ${sectionNum} : ${section.name}</h3>
+                            <p style="color: #666; font-size: 0.9em;">${section.questions.length} questions · ${section.max} points</p>
+                        </div>
+                        <div>
+                            ${isCompleted ?
+                                `<span class="section-status completed">✓ Terminée (${score}/${section.max})</span>` :
+                                `<span class="section-status pending">Non commencée</span>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }
+
+            const allComplete = Object.keys(sectionData).every(s => completedSections.includes(parseInt(s)));
+            if (allComplete) {
+                html += `
+                    <div class="button-container" style="margin-top: 30px;">
+                        <button class="btn" onclick="showFinalSummary()">Voir le résumé final →</button>
+                    </div>
+                `;
+            }
+            document.getElementById('sectionMenuList').innerHTML = html;
+        }
+
+        function navigateToSection(sectionNum) {
+            document.getElementById('instructions').style.display = 'none';
+            document.getElementById('sectionMenu').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+
+            renderSection(sectionNum);
+            updateProgress();
+        }
+
+        function renderSection(sectionNum) {
+            const section = sectionData[sectionNum];
+            let html = `
+                <div class="section active" id="section${sectionNum}">
+                    <div class="category-header">
+                        <h2>TP ${sectionNum} : ${section.name}</h2>
+                        <p>Questions de validation des concepts clés</p>
+                    </div>
+            `;
+
+            section.questions.forEach(q => {
+                html += `
+                    <div class="question">
+                        <span class="question-type">Choix Multiple - 1pt</span>
+                        <div class="question-text">${q.text}</div>
+                        <div class="options">
+                `;
+                for (let opt in q.options) {
+                    html += `
+                        <div class="option">
+                            <input type="radio" name="q${q.id}" value="${opt === questionData[q.id].correct ? 1 : 0}" id="q${q.id}${opt}">
+                            <label for="q${q.id}${opt}">${opt}) ${q.options[opt]}</label>
+                        </div>
+                    `;
+                }
+                html += `</div></div>`;
+            });
+
+            html += `
+                    <div class="button-container">
+                        <button class="btn btn-secondary" onclick="showSectionMenu()">← Menu</button>
+                        <button class="btn" onclick="submitSection(${sectionNum})">Valider la Section</button>
+                    </div>
+                </div>
+                <div class="section-results" id="results${sectionNum}"></div>
+            `;
+
+            document.getElementById('questionsContainer').innerHTML = html;
+        }
+
+        function submitSection(sectionNum) {
+            const section = sectionData[sectionNum];
+            let score = 0;
+            let answered = 0;
+            const results = [];
+
+            section.questions.forEach(q => {
+                const selected = document.querySelector(`input[name="q${q.id}"]:checked`);
+                if (selected) {
+                    answered++;
+                    const points = parseInt(selected.value);
+                    score += points;
+                    const isCorrect = points > 0;
+                    const selectedLabel = selected.parentElement.querySelector('label').textContent;
+
+                    results.push({
+                        id: q.id,
+                        isCorrect: isCorrect,
+                        userAnswer: selectedLabel,
+                        correctAnswer: questionData[q.id].correct,
+                        explanation: questionData[q.id].explanation,
+                        learningPoint: questionData[q.id].learningPoint,
+                        text: q.text
+                    });
+                }
+            });
+
+            if (answered < section.questions.length) {
+                alert("Veuillez répondre à toutes les questions.");
+                return;
+            }
+
+            sectionScores[sectionNum] = score;
+            if (!completedSections.includes(sectionNum)) completedSections.push(sectionNum);
+
+            displayResults(sectionNum, score, results);
+        }
+
+        function displayResults(sectionNum, score, results) {
+            const section = sectionData[sectionNum];
+            let html = `
+                <div class="results-header">
+                    <h2>Résultats : ${section.name}</h2>
+                    <div class="score-display">${score} / ${section.max}</div>
+                </div>
+                <div class="answer-review">
+            `;
+
+            results.forEach(r => {
+                html += `
+                    <div class="answer-item ${r.isCorrect ? 'correct' : 'incorrect'}">
+                        <h4>${r.isCorrect ? '✓ Correct' : '✗ Incorrect'}</h4>
+                        <div class="question-display"><strong>Q :</strong> ${r.text}</div>
+                        <div class="answer-display ${r.isCorrect ? 'correct-choice' : 'incorrect-choice'}">
+                            <strong>Votre réponse :</strong> ${r.userAnswer}
+                        </div>
+                        <div class="explanation">
+                            <strong>Explication :</strong> ${r.explanation}<br>
+                            <strong>À retenir :</strong> ${r.learningPoint}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <div class="button-container">
+                    <button class="btn" onclick="showSectionMenu()">Retour au Menu</button>
+                </div>
+            `;
+
+            document.getElementById(`section${sectionNum}`).style.display = 'none';
+            const resultsDiv = document.getElementById(`results${sectionNum}`);
+            resultsDiv.innerHTML = html;
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = Object.keys(sectionData).length;
+            const done = completedSections.length;
+            const pct = Math.round((done / total) * 100);
+            document.getElementById('progressText').textContent = `${done} sur ${total} sections terminées`;
+            document.getElementById('progressBar').style.width = `${pct}%`;
+            document.getElementById('progressBar').textContent = `${pct}%`;
+        }
+
+        function showFinalSummary() {
+            document.getElementById('questionsContainer').innerHTML = '';
+            document.getElementById('sectionMenu').style.display = 'none';
+
+            let totalScore = 0;
+            let maxScore = 0;
+            for(let s in sectionScores) totalScore += sectionScores[s];
+            for(let s in sectionData) maxScore += sectionData[s].max;
+
+            const pct = Math.round((totalScore/maxScore)*100);
+
+            let feedback = '';
+            let recommendations = '';
+
+            if (pct >= 90) {
+                feedback = "🌟 Excellent ! Vous maîtrisez parfaitement les concepts LLMs.";
+                recommendations = "<li>Passez à des projets pratiques en production</li><li>Explorez des architectures avancées (Multi-Agent Systems)</li><li>Partagez vos connaissances avec l'équipe</li>";
+            } else if (pct >= 75) {
+                feedback = "✅ Très bon travail ! Vous avez acquis les fondamentaux.";
+                recommendations = "<li>Révisez les sections avec score < 80%</li><li>Pratiquez avec des cas d'usage réels</li><li>Approfondissez RAG et Agents</li>";
+            } else if (pct >= 60) {
+                feedback = "📚 Bon début ! Continuez à pratiquer pour consolider.";
+                recommendations = "<li>Relisez les TPs avec score faible</li><li>Refaites les exercices pratiques</li><li>Focalisez sur Prompt Engineering et RAG (bases essentielles)</li>";
+            } else {
+                feedback = "💪 Courage ! Prenez le temps de revoir la formation.";
+                recommendations = "<li>Recommencez les TPs dans l'ordre</li><li>Pratiquez chaque concept isolément</li><li>N'hésitez pas à poser des questions au formateur</li>";
+            }
+
+            let detailHtml = '<div style="margin-top: 20px;">';
+            for (let s in sectionData) {
+                const section = sectionData[s];
+                const score = sectionScores[s] || 0;
+                const secPct = Math.round((score / section.max) * 100);
+                detailHtml += `
+                    <div class="category-score-card">
+                        <div>
+                            <strong>TP ${s} : ${section.name}</strong>
+                        </div>
+                        <div class="score-badge">${score}/${section.max} (${secPct}%)</div>
+                    </div>
+                `;
+            }
+            detailHtml += '</div>';
+
+            let html = `
+                <div class="final-summary show">
+                    <div class="results-header">
+                        <h2>🎉 Évaluation Terminée !</h2>
+                        <div class="score-display">${totalScore} / ${maxScore}</div>
+                        <p style="font-size: 1.3em; margin-top: 10px;">Score global : ${pct}%</p>
+                    </div>
+
+                    ${detailHtml}
+
+                    <div class="learning-path">
+                        <h3>Bilan</h3>
+                        <p style="font-size: 1.1em; margin-bottom: 15px;">${feedback}</p>
+                        <h4>Recommandations :</h4>
+                        <ul>${recommendations}</ul>
+                    </div>
+
+                    <div class="button-container">
+                        <button class="btn btn-secondary" onclick="showSectionMenu()">Revoir mes réponses</button>
+                        <button class="btn" onclick="location.reload()">Recommencer</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('questionsContainer').innerHTML = html;
+        }
+    </script>
+</body>
+</html>

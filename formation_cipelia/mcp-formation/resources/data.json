@@ -1,0 +1,39 @@
+## Données d'apprentissage
+
+Ceci est un exemple de ressource JSON que Claude peut lire.
+
+```json
+{
+  "formation": {
+    "titre": "Introduction aux MCPs",
+    "duree": "2 heures",
+    "modules": [
+      {
+        "numero": 1,
+        "titre": "Qu'est-ce qu'un MCP?",
+        "concepts": ["Tools", "Resources", "Prompts"]
+      },
+      {
+        "numero": 2,
+        "titre": "Créer un serveur MCP",
+        "concepts": ["@mcp.tool()", "async/await", "error handling"]
+      },
+      {
+        "numero": 3,
+        "titre": "Tester avec Claude",
+        "concepts": ["Configuration", "Testing local", "Claude Desktop"]
+      }
+    ]
+  }
+}
+```
+
+## Cas d'usage
+
+Vous pouvez avoir n'importe quel type de ressource:
+- **JSON**: Données structurées
+- **TXT**: Documents textuels
+- **CSV**: Données tabulaires
+- **MD**: Documentation
+
+Claude peut lire tout ça avec `read_resource(filename)`.

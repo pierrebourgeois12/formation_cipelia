@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+src/__init__.py
+src/main.py
+src/paris_mcp.egg-info/PKG-INFO
+src/paris_mcp.egg-info/SOURCES.txt
+src/paris_mcp.egg-info/dependency_links.txt
+src/paris_mcp.egg-info/requires.txt
+src/paris_mcp.egg-info/top_level.txt
+src/tools/__init__.py
+tests/test_prompts.py
+tests/test_resources.py
+tests/test_tools.py

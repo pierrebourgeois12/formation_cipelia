@@ -1,0 +1,29 @@
+# Core
+jupyter
+notebook
+
+# ML / DL
+torch
+transformers
+peft
+trl
+bitsandbytes
+datasets
+accelerate
+
+# LangChain / RAG
+langchain
+langchain-community
+langchain-core
+chromadb
+sentence-transformers
+
+# Agents / MCP
+# Note: 'adk' et 'mcp' sont listés ici mais peuvent nécessiter une installation spécifique (wheel ou repo)
+adk
+mcp
+
+# Utilities
+pandas
+numpy
+tqdm
