@@ -568,7 +568,7 @@ body {
 
 .skill-list li {
     padding: 0.7rem 0;
-    color: #555;
+    color: #b0b0b0;
     border-bottom: 1px solid var(--border-color);
     position: relative;
     padding-left: 1.5rem;
@@ -691,7 +691,7 @@ body {
 
 .contact-item a,
 .contact-item p {
-    color: #555;
+    color: #b0b0b0;
     text-decoration: none;
 }
 
