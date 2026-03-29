@@ -1,0 +1,313 @@
+# Paris MCP Formation 🇫🇷
+## Serveur MCP Complet pour Apprendre
+
+Un serveur MCP complèt pour apprendre comment fonctionnent les MCPs avec:
+- ✅ **Tools** - Outils pour accéder aux API (météo, arbres, données publiques)
+- ✅ **Resources** - Documents et données (guides, monuments, arrondissements)
+- ✅ **Prompts** - Contexte et instructions pour Claude
+- ✅ **Tests** - Tests complets pour tools, resources et prompts
+
+## 📁 Structure
+
+```
+paris/
+├── src/
+│   ├── main.py                 # 🔌 Serveur MCP principal
+│   └── tools/                  # 📦 Tools supplémentaires (extensible)
+├── resources/                  # 📄 Données et documents
+│   ├── paris_guide.txt        # Guide complet de Paris
+│   ├── monuments.txt          # Liste des monuments
+│   └── arrondissements.json   # Données structurées
+├── prompts/                    # 💭 Instructions pour Claude
+│   ├── paris_expert.md        # Prompt expert Paris
+│   └── guide_touriste.md      # Prompt guide enthousiaste
+├── tests/                      # 🧪 Tests automatisés
+│   ├── test_tools.py          # Tests des outils
+│   ├── test_resources.py      # Tests des ressources
+│   └── test_prompts.py        # Tests des prompts
+├── requirements.txt            # Dépendances Python
+├── launch_mcp.py              # Lanceur Python
+├── run_mcp.bat                # Lanceur Windows
+└── README.md                  # Cette doc
+```
+
+## 🚀 Démarrage Rapide
+
+### 1️⃣ Créer l'environnement virtuel
+
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### 2️⃣ Installer les dépendances
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3️⃣ Lancer le serveur MCP
+
+**Option 1 - Python (tous OS):**
+```bash
+python -m src.main
+```
+
+**Option 2 - Windows batch:**
+```bash
+run_mcp.bat
+```
+
+**Option 3 - Python launcher:**
+```bash
+python launch_mcp.py
+```
+
+Vous devriez voir:
+```
+🇫🇷 Serveur MCP Paris démarré!
+📚 Tools, Resources et Prompts disponibles
+```
+
+## 🧪 Lancer les Tests
+
+```bash
+# Tous les tests
+pytest
+
+# Tests spécifiques
+pytest tests/test_tools.py -v
+pytest tests/test_resources.py -v
+pytest tests/test_prompts.py -v
+
+# Tests avec coverage
+pytest --cov=src
+```
+
+## 📚 Qu'est-ce que tu vas apprendre
+
+### 1. Les Tools (Outils)
+- `get_location_weather()` - Météo via API Open-Meteo (gratuit)
+- `search_trees_by_species()` - Arbres via API Paris OpenData
+- `get_trees_in_arrondissement()` - Arbres par quartier
+- `get_remarkable_trees()` - Arbres les plus beaux de Paris
+
+**Concepts:**
+- Comment créer des tools avec `@mcp.tool()`
+- Appels d'API asynchrones
+- Gestion des erreurs
+- Documentation des paramètres
+
+### 2. Les Resources (Ressources)
+- `uri://paris/guide` - Guide complet de Paris
+- `uri://paris/monuments` - Descriptions des monuments
+- `uri://paris/arrondissements` - Données structurées (JSON)
+
+**Concepts:**
+- Comment servir des documents avec `@mcp.resource()`
+- Format texte et JSON
+- Chemins de fichiers
+- Fallback data si fichiers manquants
+- MimeTypes appropriés
+
+### 3. Les Prompts (Instructions)
+- `paris-expert` - Expert spécialisé en Paris
+- `guide-touriste` - Guide touristique enthousiaste
+
+**Concepts:**
+- Comment créer des prompts avec `@mcp.prompt()`
+- Instructions claires et contextualisées
+- Guidance du comportement du modèle
+- Personnalités distinctes
+
+### 4. Les Tests
+Tests pour:
+- ✅ La fonctionnalité des tools
+- ✅ L'accessibilité des resources
+- ✅ Le contenu des prompts
+- ✅ La gestion des erreurs
+- ✅ La validation des formats
+
+## 🔌 Intégration avec Claude
+
+### 1. Ajouter à Claude Desktop
+
+**Windows**: Éditer `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "paris": {
+      "command": "python",
+      "args": ["-m", "src.main"],
+      "env": {
+        "PYTHONPATH": "C:\\Users\\YourUser\\Documents\\paris"
+      }
+    }
+  }
+}
+```
+
+**Mac**: Éditer `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "paris": {
+      "command": "python3",
+      "args": ["-m", "src.main"],
+      "env": {
+        "PYTHONPATH": "/Users/YourUser/Documents/paris"
+      }
+    }
+  }
+}
+```
+
+### 2. Redémarrer Claude
+
+Après avoir ajouté la configuration, redémarrez Claude Desktop.
+Une icône 🔌 devrait apparaître, indiquant que le serveur est connecté.
+
+### 3. Utiliser dans Claude
+
+```
+Toi: "En utilisant tes ressources, crée un itinéraire pour 2 jours à Paris"
+
+Claude: [Utilise tes tools et resources pour répondre]
+```
+
+## 📖 Exemples d'Utilisation
+
+### Exemple 1: Météo
+```
+Toi: "Quelle est la météo pour demain à Paris?"
+Claude: [Appelle get_location_weather(48.8584, 2.2945)]
+Réponse: "🌤️ Météo actuelle : Principalement dégagé..."
+```
+
+### Exemple 2: Recherche d'Arbres
+```
+Toi: "Trouve les plus beaux arbres de Paris"
+Claude: [Appelle get_remarkable_trees()]
+Réponse: "🏆 10 arbres remarquables (triés par hauteur)..."
+```
+
+### Exemple 3: Itinéraire
+```
+Toi: "Crée un itinéraire pour visiter Montmartre"
+Claude: [Consulte resources, utilise prompts]
+Réponse: "🗼 Jour 1: Basilique du Sacré-Cœur... 🎭 Moulin Rouge..."
+```
+
+## 🛠️ Extension
+
+### Ajouter un nouveau Tool
+
+```python
+@mcp.tool()
+async def mon_nouveau_tool(param: str) -> str:
+    """Description du tool"""
+    # Implémentation
+    return "Résultat"
+```
+
+### Ajouter une nouvelle Resource
+
+```python
+@mcp.resource("uri://paris/maressource")
+async def ma_nouvelle_ressource() -> Resource:
+    """Description"""
+    return Resource(
+        uri="uri://paris/maressource",
+        name="Ma Ressource",
+        description="Description...",
+        mimeType="text/plain",
+        contents="Contenu..."
+    )
+```
+
+### Ajouter un nouveau Prompt
+
+```python
+@mcp.prompt("mon-prompt")
+async def mon_prompt() -> str:
+    """Description"""
+    return "Instructions pour Claude..."
+```
+
+## 📝 Fichiers Clés
+
+| Fichier | Rôle |
+|---------|------|
+| `src/main.py` | ⭐ Serveur MCP - Core de l'app |
+| `requirements.txt` | 📦 Dépendances Python |
+| `tests/test_*.py` | 🧪 Tests automatisés |
+| `resources/*.txt/.json` | 📄 Données servies par resources |
+| `prompts/*.md` | 💭 Contexte pour Claude |
+
+## 🐛 Dépannage
+
+### "Module 'src' not found"
+```bash
+# S'assurer qu'on est dans le bon répertoire
+cd paris/
+# Vérifier que src/__init__.py existe
+ls src/__init__.py
+```
+
+### API Paris Opendata retourne une erreur
+- L'API peut être lente - attends quelques secondes
+- Vérifie la connexion internet
+- La structure des données peut changer - consulte l'API directement
+
+### Les tests échouent
+```bash
+# Vérifie que pytest-asyncio est installé
+pip install pytest-asyncio
+
+# Réinstalle les dépendances
+pip install -r requirements.txt
+```
+
+## 📚 Ressources Externes
+
+- 🔗 [FastMCP Docs](https://fastmcp.readthedocs.io/)
+- 🔗 [MCP Spec](https://modelcontextprotocol.io/)
+- 🔗 [Paris OpenData](https://opendata.paris.fr/)
+- 🔗 [Open-Meteo Weather API](https://open-meteo.com/)
+
+## 🎓 Prochaines Étapes
+
+1. ✅ Comprendre la structure MCP (tools, resources, prompts)
+2. ✅ Lancer les tests et vérifier qu'ils passent
+3. ✅ Ajouter le serveur à Claude Desktop
+4. ✅ Utiliser Claude avec tes outils
+5. 🔜 Ajouter tes propres tools
+6. 🔜 Créer des tests pour tes tools
+7. 🔜 Publier ton MCP sur GitHub
+
+## 📞 Support
+
+- 📖 Lis les comments dans le code
+- 🧪 Consulte les tests pour des exemples
+- 🔍 Vérifie les logs du serveur
+- 💡 Les erreurs sont souvent dans les logs `stderr`
+
+---
+
+**Prêt à explorer le monde des MCPs? 🚀**
+
+Commence par lancer `pytest` pour vérifier que tout fonctionne, puis lance le serveur!
+
+```bash
+pytest -v              # Vérifie que tout marche
+python -m src.main     # Lance le serveur
+```
+
+Bon apprentissage! 🎓

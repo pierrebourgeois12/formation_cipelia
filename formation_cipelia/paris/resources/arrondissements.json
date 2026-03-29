@@ -1,0 +1,107 @@
+{
+  "arrondissements": [
+    {
+      "numero": 1,
+      "nom": "Île de la Cité et Palais-Royal",
+      "population": 17000,
+      "attractions": [
+        "Cathédrale Notre-Dame",
+        "Palais-Royal",
+        "Sainte-Chapelle",
+        "Île de la Cité"
+      ],
+      "caractere": "Historique et touristique"
+    },
+    {
+      "numero": 2,
+      "nom": "Bourse",
+      "population": 23000,
+      "attractions": [
+        "Bibliothèque Nationale",
+        "Passage des Panoramas",
+        "Galeries marchandes"
+      ],
+      "caractere": "Shopping et littéraire"
+    },
+    {
+      "numero": 3,
+      "nom": "Temple",
+      "population": 35000,
+      "attractions": [
+        "Archives de France",
+        "Musée Carnavalet"
+      ],
+      "caractere": "Marais historique"
+    },
+    {
+      "numero": 4,
+      "nom": "Hôtel-de-Ville",
+      "population": 28000,
+      "attractions": [
+        "Île Saint-Louis",
+        "Hôtel de Ville",
+        "Galeries d'art"
+      ],
+      "caractere": "Marais bohème"
+    },
+    {
+      "numero": 5,
+      "nom": "Panthéon",
+      "population": 61000,
+      "attractions": [
+        "Panthéon",
+        "Sorbonne",
+        "Mouffetard",
+        "Jardin des Plantes"
+      ],
+      "caractere": "Quartier Latin, étudiant"
+    },
+    {
+      "numero": 6,
+      "nom": "Luxembourg",
+      "population": 41000,
+      "attractions": [
+        "Jardin du Luxembourg",
+        "Odéon",
+        "Saint-Germain"
+      ],
+      "caractere": "Intellectuel et bourgeois"
+    },
+    {
+      "numero": 8,
+      "nom": "Élysée",
+      "population": 39000,
+      "attractions": [
+        "Champs-Élysées",
+        "Palais de l'Élysée",
+        "Arc de Triomphe",
+        "Musée du Petit Palais"
+      ],
+      "caractere": "Luxe et commerce haut de gamme"
+    },
+    {
+      "numero": 18,
+      "nom": "Montmartre",
+      "population": 195000,
+      "attractions": [
+        "Basilique du Sacré-Cœur",
+        "Moulin Rouge",
+        "Place du Tertre",
+        "Musée de Montmartre"
+      ],
+      "caractere": "Artiste et bohème"
+    },
+    {
+      "numero": 20,
+      "nom": "Belleville",
+      "population": 197000,
+      "attractions": [
+        "Parc des Buttes-Chaumont",
+        "Rue Oberkampf",
+        "Street art",
+        "Atmosphère multiculturelle"
+      ],
+      "caractere": "Jeune, bohème, multiculturel"
+    }
+  ]
+}
